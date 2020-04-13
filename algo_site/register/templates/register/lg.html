@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang = "zh-CN">
+    <head>
+        <title> algo </title>
+        <meta charset = "utf-8">
+        <style type = "text/css">
+            body {
+                font: 12px 'Lucida sns Unicode', 'Trebuchet MS', Arial, helvetica;
+                margin: 0;
+                background-color: #d9dee2;
+            }
+            #login {
+                background-color: #fff;
+                height: 240px;
+                width: 400px;
+                margin: -150px 0 0 -230px;
+                padding: 30px;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                z-index: 0;
+                border-radius: 5px;
+                box-shadow:
+                    0 0 2px rgba(0, 0, 0, 0.2),
+                    0 1px 1px rgba(0, 0, 0, .2),
+                    0 3px 0 #fff,
+                    0 4px 0 rgba(0, 0, 0, .2),
+                    0 6px 0 #fff,
+                    0 7px 0 rgba(0, 0, 0, .2);
+
+            }
+            #login h1{
+                text-align: center;
+                letter-spacing: 20px;
+                color : #B3AEAE;
+                box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0, 1px 0 rgba(255, 255, 255, 0.3) inset;
+            }
+
+            fieldset {
+                border: 0;
+                padding: 0;
+                margin: 0;
+            }
+            #inputs input {
+                padding: 15px 15px 15px 30px;
+                margin:0 0 10px 0;
+                width: 353px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                box-shadow: 0 1px 1px #ccc inset, 0 1px 9 #fff;
+            }
+            #inputs input:focus {
+                background-color: #fff;
+                border-color: #e8c291;
+                outline: none;
+                box-shadow: 0 0 0 1px #e8c291 inset;
+            }
+            #actions {
+                margin: 25px 0 0 0;
+            }
+            #submit {
+                background-color: #ffb94b;
+                border-radius: 3px;
+                text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+                box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0, 1px 0 rgba(255, 255, 255, 0.3) inset;
+                border-width: 1px;
+                border-style: soild;
+                border-color: #d69e31 #e3a037 #d5982d #e3a037;
+
+                float: left;
+                height: 35px;
+                padding: 0;
+                width: 120px;
+                cursor: pointer;
+                font: bold 15pxs Arial helvetica;
+                color: #8f5a0a;
+            }
+
+            #actions a {
+                color: #3151A2;
+                float: right;
+                line-height: 35px;
+                margin-left: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <form id = "login" method = "POST" action = "/register/lg/">
+            {% csrf_token %} 
+            <h1> 登陆 </h1>
+            <fieldset id = "inputs">
+                <input id = "email" name = "email" type = "text" placeholder = "邮箱" autofucus required>
+                    <span id = "r_email"> <font color = '#EC0808'> {{ error_email}} </font> </span>
+                <input id = "password" name = "password" type = "password" placeholder = "密码" required>
+                    <span id = "r_email"> <font color = '#EC0808'> {{ error_password}} </font> </span>
+            </fieldset>
+            <fieldset id = "actions">
+                <input type = "submit" id = "submit" value = "登录" >
+                <a href = ""> 忘记密码? </a> <a href = ""> 注册用户</a> 
+            </fieldset>
+        </form>
+    </body> 
+    <script>
+    </script>
+</html>

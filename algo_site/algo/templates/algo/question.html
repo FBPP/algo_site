@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang = "zh-CN">
+    <head>
+        <title> algo </title>
+        <meta charset = "utf-8">
+        {% load static %}
+        <link rel = "stylesheet" type = "text/css" href = "{% static 'algo/question_style.css' %}">
+        <link rel="stylesheet" href="{% static 'algo/codemirror-5.52.2/lib/codemirror.css' %}">
+        <link rel="stylesheet" href="{% static 'algo/codemirror-5.52.2/theme/seti.css' %}">
+
+        <script src="{% static 'algo/codemirror-5.52.2/lib/codemirror.js' %}"></script>
+        <script src="{% static 'algo/codemirror-5.52.2/mode/clike/clike.js' %}"></script>
+        <script src="{% static 'algo/codemirror-5.52.2/addon/edit/matchbrackets.js' %}"></script>
+    </head>
+    <body>
+        <div id = "algo_page">
+            <nav id = "n_top" class = "nav_top">
+                <div id = "div_top" >
+                    <ul class = "ul_top">
+                        <li><a href="{% url 'algo:lg_index' u.pk %}"> 题库 </a> </li>
+                        <li><a href="#"> 题解 </a> </li>
+                        <li><a href="#"> 分享 </a> </li>
+                        <li><a href="#"> 活动 </a> </li>
+                    </ul>
+                
+                    <ul class = "ul_lg">
+                        <li><a href = "#"> {{ u.user_name }} </a></li>
+                    </ul>
+                </div>
+            </nav>
+            <hr class = "hr_top">
+            
+            <div id = "div_question" class = "div_question">
+                <div id = "q_title" class = "q_title">
+                    <P style = "font-weight: bold;"> {{ q.pk }}.{{ q.question_title }} </P>
+                </div>
+                
+                <div class = "q_sub">
+                    <ul>
+                        <li> <a href = "{% url 'algo:question_index' u.pk q.pk %}">题目</a> </li>
+                        <li> 提交记录 </li>
+                        <li> 题解 </li>
+                    </ul>
+                </div>
+                <div class = "q_body">
+                    <div class = "q_content">
+                        <p class = "q_con"> 题目描述: </p>
+                        <p class = "q_t"> {{ q.question_text | linebreaksbr }} </p>
+                        <p class = "q_con"> 输入格式: </p>
+                        <p class = "q_t"> {{ q.cin_format | linebreaksbr }} </p>
+                        <p class = "q_con"> 输出格式: </p>
+                        <p class = "q_t"> {{ q.cout_format | linebreaksbr }} </p>
+                        <p class = "q_con"> 数据范围: </p>
+                        <p class = "q_t"> {{ q.data_range | linebreaksbr }} </p>
+                        <p class = "q_con"> 输入样例: </p>
+                        <div class = "q_c"> {{ q.cin_example | linebreaksbr }} </div>
+                        <p class = "q_con"> 输出样例: </p>
+                        <div class = "q_c"> {{ q.cout_example | linebreaksbr }} </div>
+                        
+                    </div>
+                    <div class = "q_describe">
+                        <div class = "q_describe_son" >
+                            <div class = "q_describe_top">
+                                <table class = "t_describe">
+                                    <tr>
+                                        <td>难度:
+                                            <span class = "
+                                            {% if q.question_level == 0 %}
+                                                q_td4_s
+                                            {% elif q.question_level == 1 %}
+                                                q_td4_m
+                                            {% elif q.question_level == 2 %}
+                                                q_td4_h
+                                            {% endif %}
+                                            ">
+                                            {% if q.question_level == 0 %}
+                                                简单
+                                            {% elif q.question_level == 1 %}
+                                                中等
+                                            {% elif q.question_level == 2 %}
+                                                困难
+                                            {% endif %}
+                                        </td>
+                                        
+                                    </span>
+                                    </tr>
+                                    <tr>
+                                        <td>来源:
+                                            <span>{{ q.question_source }}</span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class = "lable">
+                                <p> 算法类型: </p>
+                                <p> {{ q.question_lable }} </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class = "div_code">
+                <br>
+                <div class = "code_tool_bar">
+                    <div class = "code_lag">
+                        <select>
+                            <option value = "1" selected> C++ </option>
+                            <option value = "2"> Python </option>
+                            <option value = "3"> javascript </option>
+                        </select>
+                    </div>
+                    <div class = "code_reset">
+                        重置
+                    </div>
+                    <div class = "code_tool">
+                        选项
+                    </div>
+                </div>
+                <div class = "code_edit">
+                    <textarea id = "code"></textarea>
+                </div>
+                <div class = "code_btn">
+                    <input type = "submit" id = "submit" value = "调试" onclick = "on_debug()" >
+                    <input type = "submit" id = "submit" value = "提交" >
+                </div>
+            </div>
+            <div class = "div_code_status">
+                <div class = "text_status">
+                    <p> text_status </p>
+                </div>
+                <div class = "cin">
+                    <p> cin </p>
+                </div>
+                <div class = "cout">
+                    <pre id = "cout"> </pre>
+                </div>
+            </div>
+
+        </div>
+        
+        
+    </body> 
+
+    <script type="text/javascript">
+            if(localStorage["{{ q.pk }}"]) {
+                var _code = localStorage["{{ q.pk }}"];
+                document.getElementById("code").value = _code;
+            }
+            var editor = CodeMirror.fromTextArea(document.getElementById("code"),{
+                        mode:"text/x-c++src",
+                        lineNumbers: true,
+                        matchBrackets: true,
+                        indentUnit: 4,
+                });
+
+            window.onbeforeunload = function(event) {
+                var _code = editor.getValue();
+                localStorage.setItem("{{ q.pk }}", _code);
+            };
+
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            var req_debug = new XMLHttpRequest();
+
+            function on_debug() {
+                req_debug.onreadystatechange = function() {
+                    if(req_debug.readyState == 4 && req_debug.status == 200) {
+                        var res = JSON.parse(req_debug.responseText);
+                        console.log(res);
+                        document.getElementById("cout").innerHTML = res.cout;
+                    }
+                }
+
+                req_debug.open("POST", "{% url 'algo:req_debug' %}", true);
+                var data = "code=" + editor.getValue() + "&uid=" + {{ u.pk }} + "&qid=" + {{ q.pk }};
+                
+                var csrftoken = getCookie('csrftoken');
+                req_debug.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                req_debug.setRequestHeader('X-CSRFToken', csrftoken);
+                req_debug.send(data);
+            }
+            
+    </script>
+
+</html>

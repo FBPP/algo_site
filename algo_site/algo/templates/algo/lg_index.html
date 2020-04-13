@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang = "zh-CN">
+    <head>
+        <title> algo </title>
+        <meta charset = "utf-8">
+        {% load static %}
+        <link rel = "stylesheet" type = "text/css" href = "{% static 'algo/index_style.css' %}">
+    </head>
+    <body>
+        <div id = "algo_page">
+            <nav id = "n_top" class = "nav_top">
+                <div id = "div_top" >
+                    <ul class = "ul_top">
+                        <li><a href="{% url 'algo:lg_index' u.pk %}"> 题库 </a> </li>
+                        <li><a href="#"> 题解 </a> </li>
+                        <li><a href="#"> 分享 </a> </li>
+                        <li><a href="#"> 活动 </a> </li>
+                    </ul>
+                
+                    <ul class = "ul_lg">
+                        <li><a href = "#"> {{ u.user_name }} </a></li>
+                    </ul>
+                </div>
+            </nav>
+            <hr class = "hr_top">
+           
+            
+            <div id = "div_question" class = "div_question">
+                <div class = "div_search">
+                    <span class = "span_input"></span>
+                        <input type = "text" name = "search" class = "input_search" placeholder = "搜索题号, 标题">
+                    </span>
+                    <span class = "span_btn">
+                        <button class = "btn_search" type = "submit"></button>
+                    </span>
+                </div>
+                
+                <div >
+                    <table id = "question" class = "table_question">
+                        <thead>
+                            <tr> 
+                                <th width = 50px><img = ""> </th>
+                                <th width = 50px>题号</th>
+                                <th width = 600px>标题</th>
+                                <th width = 50px>难度</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for question in question_list %}
+                            <tr class = "q_tr">
+                                <td></td>
+                                <td class = "q_td2"> {{ question.pk }} </td>
+                                <td class = "q_td3">
+                                    <a href="{% url 'algo:question_index' u.pk question.pk %}">{{ question.question_title }} </a>
+                                </td>
+                                <td class = "
+                                    {% if question.question_level == 0 %}
+                                        q_td4_s
+                                    {% elif question.question_level == 1 %}
+                                        q_td4_m
+                                    {% elif question.question_level == 2 %}
+                                        q_td4_h
+                                    {% endif %}
+                                    ">
+                                    {% if question.question_level == 0 %}
+                                        简单
+                                    {% elif question.question_level == 1 %}
+                                        中等
+                                    {% elif question.question_level == 2 %}
+                                        困难
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+        
+        
+    </body> 
+</html>

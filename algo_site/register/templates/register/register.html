@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang = "zh-CN">
+    <head>
+        <title> algo </title>
+        <meta charset = "utf-8">
+        <style type = "text/css">
+            body {
+                font: 12px 'Lucida sns Unicode', 'Trebuchet MS', Arial, helvetica;
+                margin: 0;
+                background-color: #d9dee2;
+            }
+            #sign_in {
+                background-color: #fff;
+                height: 340px;
+                width: 400px;
+                margin: -150px 0 0 -230px;
+                padding: 30px;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                z-index: 0;
+                border-radius: 5px;
+                box-shadow:
+                    0 0 2px rgba(0, 0, 0, 0.2),
+                    0 1px 1px rgba(0, 0, 0, .2),
+                    0 3px 0 #fff,
+                    0 4px 0 rgba(0, 0, 0, .2),
+                    0 6px 0 #fff,
+                    0 7px 0 rgba(0, 0, 0, .2);
+
+            }
+            #sign_in h1{
+                text-align: center;
+                letter-spacing: 20px;
+                color : #B3AEAE;
+                box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0, 1px 0 rgba(255, 255, 255, 0.3) inset;
+            }
+
+            fieldset {
+                border: 0;
+                padding: 0;
+                margin: 0;
+            }
+            #inputs input {
+                padding: 15px 15px 15px 30px;
+                margin:0 0 10px 0;
+                width: 353px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                box-shadow: 0 1px 1px #ccc inset, 0 1px 9 #fff;
+            }
+            #inputs input:focus {
+                background-color: #fff;
+                border-color: #78F06B;
+                outline: none;
+                box-shadow: 0 0 0 1px #78F06B inset;
+            }
+            #actions {
+                margin: 25px 0 0 0;
+            }
+            #submit {
+                background-color: #78F06B;
+                border-radius: 3px;
+                text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+                box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0, 1px 0 rgba(255, 255, 255, 0.3) inset;
+                border-width: 1px;
+                border-style: soild;
+                border-color: #4cd631 #37e393 #2dd5a3 #37e36b;
+
+                float: left;
+                height: 35px;
+                padding: 0;
+                width: 120px;
+                cursor: pointer;
+                font: bold 15pxs Arial helvetica;
+                color: rgb(95, 99, 95);
+            }
+
+            #actions a {
+                color: #3151A2;
+                float: right;
+                line-height: 35px;
+                margin-left: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <form id = "sign_in" method = "post" action = "/register/from_page = {{ prev_page }}"> 
+            {% csrf_token %}
+            <h1> 注册 </h1>
+            <fieldset id = "inputs">
+                <input id = "username" name = "username" type = "text" placeholder = "用户名" autofucus required>
+                   <span id = "r_name"> <font color = '#EC0808' > {{ error_name}} </font> </span>
+                <input id = "email" name = "email" type = "email" placeholder = "邮箱" required>
+                    <span id = "r_email"> <font color = '#EC0808'> {{ error_email}} </font> </span>
+                <input id = "password" name = "password" type = "password" placeholder = "密码" required><span id = "r_password"></span>
+                <input id = "confirm_password" type = "password" placeholder = "确认密码" onkeyup = "check()" required><span id = "equ"></span>
+            </fieldset>
+            <fieldset id = "actions">
+                <input type = "submit" id = "submit"  value = "注册" >
+                <a href = ""> 已有账户? 请登陆 </a>
+            </fieldset>
+        </form>
+    </body> 
+    <script type = "text/javascript">
+        function check() {
+            var p1 = document.getElementById("password").value;
+            var p2 = document.getElementById("confirm_password").value;
+            if(p1 != p2) {
+                document.getElementById("equ").innerHTML = "<font color = '#EC0808'> 两次密码不一致 无法提交</font>";
+                document.getElementById("submit").disabled = true;    
+            }   
+            else {
+                document.getElementById("equ").innerHTML = "<font color = 'green'> 两次密码一致 </font>";
+                document.getElementById("submit").disabled = false;    
+            }    
+        }
+    </script>
+</html>
