@@ -96,7 +96,7 @@ a:hover {
     border:4px solid #FAEE08;
 }
 .q_describe_son {
-    margin-left: 70%;
+    margin-left: 60%;
     flex-direction: column;
 }
 .q_describe_top {
@@ -153,9 +153,16 @@ a:hover {
 .text_status {
     border: 1px solid #EE06E2;
 }
+.status_body {
+    border: 1px solid #12E23B;
+}
+.status_cin {
+    border: 1px solid #122EE2;
+}
 .cin {
     border: 1px solid #C43E30;
 }
+
 .cout {
     border: 1px solid #30C455;
 }

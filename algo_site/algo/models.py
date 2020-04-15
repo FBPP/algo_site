@@ -14,6 +14,8 @@ class Question(models.Model):
     cout_example = models.TextField(max_length = 100)
     time_limit = models.IntegerField(default = 1000)
     memory_limit = models.IntegerField(default = 65536)
+    test_total = models.IntegerField(default = 1)
+    test_path = models.CharField(max_length = 100)
 
     def __str__(self):
         return self.question_title

@@ -11,6 +11,8 @@
         <script src="{% static 'algo/codemirror-5.52.2/lib/codemirror.js' %}"></script>
         <script src="{% static 'algo/codemirror-5.52.2/mode/clike/clike.js' %}"></script>
         <script src="{% static 'algo/codemirror-5.52.2/addon/edit/matchbrackets.js' %}"></script>
+
+        
     </head>
     <body>
         <div id = "algo_page">
@@ -53,9 +55,9 @@
                         <p class = "q_con"> 数据范围: </p>
                         <p class = "q_t"> {{ q.data_range | linebreaksbr }} </p>
                         <p class = "q_con"> 输入样例: </p>
-                        <div class = "q_c"> {{ q.cin_example | linebreaksbr }} </div>
+                        <div id = "q_exp_cin"class = "q_c"> {{ q.cin_example | linebreaksbr }} </div>
                         <p class = "q_con"> 输出样例: </p>
-                        <div class = "q_c"> {{ q.cout_example | linebreaksbr }} </div>
+                        <div id class = "q_c"> {{ q.cout_example | linebreaksbr }} </div>
                         
                     </div>
                     <div class = "q_describe">
@@ -87,6 +89,11 @@
                                     <tr>
                                         <td>来源:
                                             <span>{{ q.question_source }}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>时空限制:
+                                            <span> {{ t_l}} S / {{ m_l }} MB </span>
                                         </td>
                                     </tr>
                                 </table>
@@ -123,19 +130,36 @@
                 </div>
                 <div class = "code_btn">
                     <input type = "submit" id = "submit" value = "调试" onclick = "on_debug()" >
-                    <input type = "submit" id = "submit" value = "提交" >
+                    <input type = "submit" id = "submit" value = "提交" onclick = "on_submit()">
                 </div>
             </div>
             <div class = "div_code_status">
-                <div class = "text_status">
+                <div id = "status" class = "text_status">
                     <p> text_status </p>
                 </div>
-                <div class = "cin">
-                    <p> cin </p>
+                <div id = "status_body" class = "status_body">
+                    <div class = "status_cin">
+                        <p>输入样例:</p>
+                        <div class = "cin">
+                            <textarea id = "cin_exp"></textarea>
+                        </div>
+                    </div>
+                    <div class = "cout">
+                        <p>输出:</p>
+                        <pre id = "cout"> </pre>
+                    </div>
+                    <div id = "div_true_cout" class = "cout">
+                        <p> 标准答案: </p>
+                        <pre id = "true_cout"></pre>
+                    </div>
+                    <div>
+                        <p id = "t_m"></p>
+                    </div>
                 </div>
-                <div class = "cout">
-                    <pre id = "cout"> </pre>
-                </div>
+            </div>
+
+            <div style = "width: 100%; height: 200px;">
+
             </div>
 
         </div>
@@ -148,12 +172,22 @@
                 var _code = localStorage["{{ q.pk }}"];
                 document.getElementById("code").value = _code;
             }
+
+            var uid = {{ u.id }};
+            var qid = {{ q.id }};
+            var q_exp_cin = document.getElementById("q_exp_cin").innerHTML;
+            
             var editor = CodeMirror.fromTextArea(document.getElementById("code"),{
                         mode:"text/x-c++src",
                         lineNumbers: true,
                         matchBrackets: true,
                         indentUnit: 4,
                 });
+
+            var cin_ed = CodeMirror.fromTextArea(document.getElementById("cin_exp"),{
+                
+            });
+            cin_ed.setSize("auto", "100px")
 
             window.onbeforeunload = function(event) {
                 var _code = editor.getValue();
@@ -177,22 +211,80 @@
 
             var req_debug = new XMLHttpRequest();
 
+
+
             function on_debug() {
+                if(cin_ed.getValue() == "") {
+                    cin_ed.getDoc().setValue(q_exp_cin);
+                } 
                 req_debug.onreadystatechange = function() {
                     if(req_debug.readyState == 4 && req_debug.status == 200) {
-                        var res = JSON.parse(req_debug.responseText);
-                        console.log(res);
-                        document.getElementById("cout").innerHTML = res.cout;
-                    }
+                            var res = JSON.parse(req_debug.responseText);
+                            console.log(res);
+                            document.getElementById("status").innerHTML = res.result;
+                            document.getElementById("status_body").style.display = "inline"; 
+                            document.getElementById("div_true_cout").style.display = "none"; 
+                            document.getElementById("cout").innerHTML = res.cout;
+                            cin_ed.getDoc().setValue(res.cin_text);
+                            document.getElementById("t_m").innerHTML = "运行时间:" + res.timeused + 'ms' +
+                                "    运行空间:" + res.memoryused + "MB"
+                            console.log(res.cin_text);
+                        }
+                                           
                 }
 
                 req_debug.open("POST", "{% url 'algo:req_debug' %}", true);
-                var data = "code=" + editor.getValue() + "&uid=" + {{ u.pk }} + "&qid=" + {{ q.pk }};
-                
+                var data = JSON.stringify({
+                        "code" :  editor.getValue(),
+                        "uid" : uid,
+                        "qid" : qid,
+                        "lang" : "c++" ,
+                        "cin_exp" :  cin_ed.getValue()
+                    });
+                console.log(data)
                 var csrftoken = getCookie('csrftoken');
                 req_debug.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
                 req_debug.setRequestHeader('X-CSRFToken', csrftoken);
-                req_debug.send(data);
+                req_debug.send(data);   
+            }
+
+            var req_submit = new XMLHttpRequest();
+            function on_submit() {
+                req_submit.onreadystatechange = function() {
+                    if(req_submit.readyState == 4 && req_submit.status == 200) {
+                        var res = JSON.parse(req_submit.responseText);
+                        console.log(res);
+                        document.getElementById("status").innerHTML = res.result; 
+                        if(res.result == "Accepted") {
+                            document.getElementById("status_body").style.display = "none"; 
+                        }
+                        else {
+                            document.getElementById("status_body").style.display = "inline"; 
+                            document.getElementById("cout").innerHTML = res.cout;
+                            document.getElementById("true_cout").innerHTML = res.true_cout;
+                            cin_ed.getDoc().setValue(res.cin_text);
+                            document.getElementById("t_m").innerHTML = "运行时间:" + res.timeused + 'ms' +
+                                "    运行空间:" + res.memoryused + "MB"
+                            console.log(res.cin_text);
+                        }
+                        
+                        
+                                           
+                    }
+                }
+
+                req_submit.open("POST", "{% url 'algo:req_submit' %}", true);
+                var data = JSON.stringify({
+                        "code" :  editor.getValue(),
+                        "uid" : uid,
+                        "qid" : qid,
+                        "lang" : "c++" 
+                    });
+                console.log(data)
+                var csrftoken = getCookie('csrftoken');
+                req_submit.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                req_submit.setRequestHeader('X-CSRFToken', csrftoken);
+                req_submit.send(data);   
             }
             
     </script>

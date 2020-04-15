@@ -5,84 +5,157 @@ import subprocess
 import os
 from algo.models import Question
 import shlex
+import lorun
 
-def compile(solution_id,language):
+
+def compile(src, language, path, cur_name):
+
     build_cmd = {      
-        "g++"    : "g++ main.cpp -O2 -Wall -lm --static -DONLINE_JUDGE -o main",
+        "c++"    : "g++ " + src + " -o " + cur_name,
         "python3": 'python3 -m py_compile main.py',
     }
-    p = subprocess.Popen(build_cmd[language], shell = True, cwd = "/home/pengpeng/windows_shared/algo_site/algo/judge/judge_space", 
+    print(build_cmd[language])
+    
+    p = subprocess.Popen(build_cmd[language], shell = True, cwd = path, 
         stdout = subprocess.PIPE, stderr = subprocess.PIPE)
     out, err =  p.communicate()#获取编译错误信息
-    print(type(err))
+    text_err = str(err, encoding="utf-8")
+    print(text_err)
     if p.returncode != 0: #返回值为0,编译成功
-        return {"status" : "Compile Error", "text" : err}
-    return {"text" : ""}
+        return {"status" : "Compile Error", "text" : text_err}
+    return {}
 
-def run(q_id, cmd, data_count, u_id, cin_fd, cout_fd):
-    q = Question.objects.get(pk = q_id)
-    tl = ((q.time_limit) + 10) / 1000.0
-    ml = q.memory_limit * 1024
-    max_rss = 0
-    max_vms = 0
-    total_time = 0
-    for i in range(data_count):
-        args = shlex.split(cmd)
-        p = subprocess.Popen(args, env = {"PATH" : "/judge_space"}, 
-            cwd = "/home/pengpeng/windows_shared/algo_site/algo/judge/judge_space", stdin = cin_fd, 
-            stdout = cout_fd)
-        start = time.time()
-        pid = p.pid
-        glan = psutil.Process(pid)
-        while True:
-            time_to_now = time.time() - start + total_time
-            if psutil.pid_exists(pid) is False:
-                program_info["take_time"] = time_to_now * 1000
-                program_info["take_memory"] = max_rss / 1024.0
-                program_info["result"] = "Runtime Error"
-                return program_info
-            rss, vms = glan.get_memory_info()
-            if p.poll() == 0:
-                end = time.time()
-                break
-            if max_rss < rss:
-                max_rss = rss
-                print('max_rss = %s' %max_rss)
-            if max_vms < vms:
-                max_vms = vms
-            if time_to_now > time_limit or max_rss > mem_limit:
-                program_info["take_time"] = time_to_now * 1000  
-                program_info["take_memory"] = max_rss / 1024.0
-                if time_to_now > time_limit:
-                    program_info["result"] = "Time Limit Exceeded"
-                else:
-                    program_info['result'] = "Memory Limit Exceeded"
-                glan.terminate()
-                return program_info
-        logging.debug("max_rss = %s" %max_rss)
-        logging.debug("max_vms = %s" %max_vms)
-    program_info["take_time"] = total_time * 1000
-    program_info["take_memory"] = max_rss / 1024.0
-    program_info["result"] = "Finish"
-    return program_info
-
-def judge_result(problem_id,solution_id,data_num):
-    currect_result = os.path.join(config.data_dir, str(problem_id), 'data%s.out'%data_num)
-    user_result = os.path.join(config.work_dir, str(solution_id),'out%s.txt'%data_num)
-    try:
-        curr = file(currect_result).read().replace('\r','').rstrip()#删除\r,删除行末的空格和换行
-        user = file(user_result).read().replace('\r','').rstrip()
-    except:
-        return False
-    if curr == user:       #完全相同:AC
-        return "Accepted"
-    if curr.split() == user.split(): #除去空格,tab,换行相同:PE
-        return "Presentation Error"
-    if curr in user:  #输出多了
-        return "Output limit"
-    return "Wrong Answer"  #其他WA
-    return {"status" : "Finish", "text" : err} 
+RESULT_STR = [
+    'Accepted',
+    'Presentation Error',
+    'Time Limit Exceeded',
+    'Memory Limit Exceeded',
+    'Wrong Answer',
+    'Runtime Error',
+    'Output Limit Exceeded',
+    'Compile Error',
+    'System Error'
+]
 
 
+def runone(in_path, out_path, ques_info, cur_name):
+    temp_name = cur_name + ".out" 
+    fin = open(in_path)
+    cin_text = fin.read()
+    fin.close()
+    fin = open(in_path)
+    ftemp = open(temp_name, "w")
+
+    runcfg = {
+        "args" : ["./" + cur_name],
+        "fd_in" : fin.fileno(),
+        "fd_out" : ftemp.fileno(),
+        "timelimit" : ques_info["t_l"],
+        "memorylimit": ques_info["m_l"]
+    }
+
+    print("runone", runcfg["args"])
     
+    rst = lorun.run(runcfg)
+    fin.close()
+    ftemp.close()
+
+    if rst["result"] == 0:
+        ftemp = open(temp_name)
+        fout = open(out_path)
+        crst = lorun.check(fout.fileno(), ftemp.fileno())
+        
+        ftemp.close()
+
+        if crst != 0:
+            ftemp = open(temp_name)
+            _t = ftemp.read()
+            out = fout.read()
+            i = len(_t) - 1
+            while _t[i] == '\n' or _t[i] == ' ':
+                i -= 1
+            t = _t[0 : i + 1]
+            if(t == out):
+                crst == 0
+            else:   
+                rst["result"] = crst
+                rst["cout"] = t
+                rst["true_cout"] = out
+                ftemp.close()
+                fout.close()
+    rst["cin_text"] = cin_text
+    os.remove(temp_name)
+    print("run_one:" , rst)
+    return rst
+
+def debug(str_in, ques_info, cur_name, exec_path):
+    os.chdir(exec_path)
+    cin_name = cur_name + "in"
+    fin = open(cin_name, "w")
+    fin.write(str_in)
+    fin.close()
+    fin = open(cin_name, "r")
+
+    temp_name = cur_name + ".out"
+    ftemp = open(temp_name, "w")
+
+    runcfg = {
+        "args" : ["./" + cur_name],
+        "fd_in" : fin.fileno(),
+        "fd_out" : ftemp.fileno(),
+        "timelimit" : ques_info["t_l"],
+        "memorylimit": ques_info["m_l"]
+    }
+    rst = lorun.run(runcfg)
+    fin.close()
+    ftemp.close()
+
+    rst["result"] = RESULT_STR[rst["result"]]
+    ftemp = open(temp_name)
+    _t = ftemp.read()
+    i = len(_t) - 1
+    while _t[i] == '\n' or _t[i] == ' ':
+        i -= 1
+    t = _t[0 : i + 1]
+    rst["cout"] = t
+    ftemp.close()
+    os.remove(temp_name)
+    os.remove(cin_name)
+    print("debug:" , rst)
+    return rst
+
+
+
+def judge(td_path, td_total, ques_info, cur_name, exec_path):
+    os.chdir(exec_path)
+
+    for i in range(td_total):
+        in_path = td_path + '/' + str(i) + ".in"
+        out_path = td_path + '/' + str(i) + ".out"
+
+        print(in_path)
+        print(out_path)
+        res = {
+            "result" : "",
+            "memoryused" : 0,
+            "timeused" : 0,
+        }
+        if os.path.isfile(in_path) and os.path.isfile(out_path):
+            rst = runone(in_path, out_path, ques_info, cur_name)
+            rst["result"] = RESULT_STR[rst["result"]]
+            if rst["result"] != "Accepted":
+                print(rst)
+                os.remove(cur_name)
+                return rst
+            res["result"] = "Accepted"
+            res["memoryused"] = max(rst["memoryused"], res["memoryused"])
+            res["timeused"] = max(rst["timeused"], res["timeused"])  
+        else:
+            print('testdata:%d incompleted' % i)
+            os.remove(cur_name)
+            exit(-1)
+    os.remove(cur_name)
+    return res
+
+
     
