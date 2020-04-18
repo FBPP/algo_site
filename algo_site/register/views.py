@@ -44,13 +44,14 @@ def regist(request):
             send_email(email, code)
             message = "请前往注册邮箱, 进行邮件确认"
             return render(request, 'register/confirm.html', locals())
+            
 def send_email(email, code):
     from django.core.mail import EmailMultiAlternatives
     subject = "来自algo的注册邮件"
     text_content = "你的邮箱服务不支持html格式, 无法完成验证"
     html_content = ''' <h3>感谢注册</h3>
                     <p>点击<a href = "http://{}/register/confirm/{}" target = blank >www.register.link</a>完成注册确认</p>
-                    <p> 此链接有效期为{} </p>
+                    <p> 此链接有效期为{}天 </p>
                     '''.format("172.20.10.11:8000", code, settings.CONFIRM_DAYS)
     msg = EmailMultiAlternatives(subject, text_content, settings.EMAIL_HOST_USER, [email])
     msg.attach_alternative(html_content, "text/html")
@@ -76,6 +77,7 @@ def confirm(request, code):
         confirm.delete()
         message = "注册成功, 开始刷题之旅吧"
         return render(request, "register/confirm.html", locals())
+
 def lg(request):
     if request.method == "GET":
         return render(request, "register/lg.html");

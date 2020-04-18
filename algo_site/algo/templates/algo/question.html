@@ -16,6 +16,8 @@
     </head>
     <body>
         <div id = "algo_page">
+            {% include 'algo/nav.html'%}
+            <!--
             <nav id = "n_top" class = "nav_top">
                 <div id = "div_top" >
                     <ul class = "ul_top">
@@ -30,6 +32,7 @@
                     </ul>
                 </div>
             </nav>
+        -->
             <hr class = "hr_top">
             
             <div id = "div_question" class = "div_question">
@@ -39,8 +42,8 @@
                 
                 <div class = "q_sub">
                     <ul>
-                        <li> <a href = "{% url 'algo:question_index' u.pk q.pk %}">题目</a> </li>
-                        <li> 提交记录 </li>
+                        <li> <a href = "{% url 'algo:question_index' q.pk %}">题目</a> </li>
+                        <li> <a href = "{% url 'algo:submission' q.pk %}" >提交记录 </a></li>
                         <li> 题解 </li>
                     </ul>
                 </div>
@@ -260,6 +263,7 @@
                         }
                         else {
                             document.getElementById("status_body").style.display = "inline"; 
+                            document.getElementById("div_true_cout").style.display = "inline";
                             document.getElementById("cout").innerHTML = res.cout;
                             document.getElementById("true_cout").innerHTML = res.true_cout;
                             cin_ed.getDoc().setValue(res.cin_text);
@@ -286,7 +290,21 @@
                 req_submit.setRequestHeader('X-CSRFToken', csrftoken);
                 req_submit.send(data);   
             }
+            /*
+            var req_submission = new XMLHttpRequest();
+            function on_submission() {
+                req_submission.onreadystatechange = function() {
+                    if(req_submit.readyState == 4 && req_submit.status == 200) {
+                        alert("请先登录");
+                    }
+                }
+
+                req_submision.open("GET", "{% url 'algo:submission' q.id %}", true);
+                req_debug.send(null);
+            }
+            */
             
+
     </script>
 
 </html>

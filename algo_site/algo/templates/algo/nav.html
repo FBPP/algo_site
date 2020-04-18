@@ -1,17 +1,15 @@
 
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-
 <nav id = "n_top" class = "nav_top">
     <div id = "div_top" >
         <ul class = "ul_top">
             <li><a href="{% url 'algo:lg_index' u.pk %}"> 题库 </a> </li>
-            <li><a href="#"> 题解 </a> </li>
+            <li><a href="{% url 'algo:solution' %}"> 题解 </a> </li>
             <li><a href="#"> 分享 </a> </li>
             <li><a href="#"> 活动 </a> </li>
         </ul>
     
         <ul id = "ul_lg" class = "ul_lg">
-            <li><a href = "#"> {{ user_name }} </a></li>
+            <li><a href = "#"> {{ u.user_name }} </a></li>
         </ul>
     </div>
 </nav>

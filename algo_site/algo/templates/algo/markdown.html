@@ -1,0 +1,36 @@
+
+<head>
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'algo/codemirror-5.52.2/lib/codemirror.css' %}">
+        <link rel="stylesheet" href="{% static 'algo/codemirror-5.52.2/theme/seti.css' %}">
+
+        <link rel = "stylesheet" href = "{% static 'algo/markdown.css' %}">
+
+        <script src="{% static 'algo/codemirror-5.52.2/lib/codemirror.js' %}"></script>
+        <script src="{% static 'algo/codemirror-5.52.2/mode/markdown/markdown.js' %}"></script>
+</head>
+
+<div class = "markdown">
+    <div class = "mark_tool">
+        <div><a href = "#"> 编辑 </a></div>
+        <div><a href = "#"> 预览 </a></div>
+    </div>
+
+    <div class = "mark_edit">
+        <textarea name = "mark_text" id = "write_mark">
+        </textarea>
+    </div>
+    
+</div>
+
+<script>
+    var mark = CodeMirror.fromTextArea(document.getElementById("write_mark"),{
+                        mode: "text/x-markdown",
+                        lineNumbers: true,
+                        matchBrackets: true,
+                        indentUnit: 4,
+                        highlightFormatting: true,
+                        showCursorWhenSelecting: true,
+                });
+                
+</script>

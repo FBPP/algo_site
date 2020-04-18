@@ -1,0 +1,33 @@
+.sub_bar {
+    border: 4px solid #F607BC;
+    height: 20%;
+}
+.record_list {
+    border: 2px solid #076DF6;
+}
+
+.record_table {
+    width: 100%;
+    border: 2px solid #C7C7C7;
+    border-collapse: collapse;
+}
+
+.record_tr {
+    width: 100%;
+    height: 30px;
+    
+}
+.record_tr td{
+    width: 20%;
+    align-items : center;
+    text-align: center;
+    border-top: 1px solid #C7C7C7;
+}
+
+.AC {
+    color: #24EF17;
+}
+.NOT_AC {
+    color: #F62807;
+}
+

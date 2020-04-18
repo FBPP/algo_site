@@ -7,6 +7,8 @@ a {
 }
 #algo_page {
     border:1px solid #EF0B0B;
+    width: 100%;
+    height: 100%;
 }
 
 a:hover {
@@ -165,4 +167,18 @@ a:hover {
 
 .cout {
     border: 1px solid #30C455;
+}
+
+
+.recore_table {
+    width: 100%;
+    height: 100%;
+    border: 4px solid #0DDCF4;
+}
+.recore_tr {
+    width: 100%;
+    height: 30px;
+}
+.recore_tr td{
+    width: 20%
 }

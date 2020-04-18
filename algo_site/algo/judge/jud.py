@@ -72,7 +72,7 @@ def runone(in_path, out_path, ques_info, cur_name):
             _t = ftemp.read()
             out = fout.read()
             i = len(_t) - 1
-            while _t[i] == '\n' or _t[i] == ' ':
+            while i >= 0 and ( _t[i] == '\n' or _t[i] == ' '):
                 i -= 1
             t = _t[0 : i + 1]
             if(t == out):
@@ -114,7 +114,7 @@ def debug(str_in, ques_info, cur_name, exec_path):
     ftemp = open(temp_name)
     _t = ftemp.read()
     i = len(_t) - 1
-    while _t[i] == '\n' or _t[i] == ' ':
+    while i >= 0 and (_t[i] == '\n' or _t[i] == ' '):
         i -= 1
     t = _t[0 : i + 1]
     rst["cout"] = t

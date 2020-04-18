@@ -1,0 +1,26 @@
+.sol {
+    display: flex;
+    flex-direction: column;
+}
+.sol_head {
+    display: flex;
+    flex-direction: row;
+}
+.sol_table {
+    width: 100%;
+    border: 2px solid #C7C7C7;
+    border-collapse: collapse;
+}
+.easy {
+    color : #6CF812;
+}
+.middle {
+    color : #F38914;
+}
+.hard {
+    color : #FD0404;
+}
+
+
+
+

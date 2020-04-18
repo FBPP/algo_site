@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang = "zh-CN">
+    <head>
+        <title> algo </title>
+        <meta charset = "utf-8">
+        {% load static %}
+        <link rel = "stylesheet" type = "text/css" href = "{% static 'algo/index_style.css' %}">
+
+        <link rel = "stylesheet" type = "text/css" href = "{% static 'algo/solution.css' %}">
+        <link rel = "stylesheet" type = "text/css" href = "{% static 'algo/solution_item.css' %}">
+
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    </head>
+    <body>
+        <div id = "algo_page">
+
+            {% include 'algo/nav.html'%}
+
+            <hr class = "hr_top">
+
+            <h2>{{ sol.qid }}.{{ sol.title }}</h2>
+            <header>
+                <a href = "{{ sol.source_link }}"> 原题链接 </a>
+                <div class = "
+                            {% if sol.level == 0 %}
+                            easy
+                            {% elif sol.level == 1 %}
+                            middle
+                            {% else %}
+                            hard
+                            {% endif %}
+                        ">
+                        {% if sol.level == 0 %}
+                            简单
+                        {% elif sol.level == 1 %}
+                            中等
+                        {% elif sol.level == 2 %}
+                            困难
+                        {% endif %}
+                </div>
+                <div> 作者:
+                    <a href = "#"> {{ sol.author_id.user_name }}</a>
+                </div>
+                <div> {{sol.time}} </div>
+                <div>
+                    {% if u.pk == aid %}
+                    <form method = "POST" action = "{% url 'algo:edit_sol' %}">
+                    {% csrf_token %}
+                        <input name = "sol_id", value = "{{ sol.pk }}" style = " display : None; " ></input>
+                        <button type = "submit"> 编辑 </button>
+                    </form>
+                    <button onclick = "on_delete()"> 删除</button>
+                    {% endif %}
+                </div>
+            </header>
+            <section>
+                <div class = "sol_vote">
+                    <button>赞同</button>
+                    <P>{{ sol.vote }}</P>
+                    <button> 不赞同 </button>
+                </div>
+                <article id = "sol_content" class = "sol_content">
+                </article>
+                
+            </section>
+            <article>
+                <div>
+                    <h4>评论</h4>
+                    <input type = "text">
+                </div>  
+            </article>
+
+        </div>
+        
+        
+    </body> 
+
+
+    <script type = "text/javascript">
+        function getCookie(name) {
+                    var cookieValue = null;
+                    if (document.cookie && document.cookie !== '') {
+                        var cookies = document.cookie.split(';');
+                        for (var i = 0; i < cookies.length; i++) {
+                            var cookie = cookies[i].trim();
+                            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                break;
+                            }
+                        }
+                    }
+                    return cookieValue;
+                }       
+
+        var sol_content = {{ content | safe}};
+        document.getElementById('sol_content').innerHTML = marked(sol_content);
+
+        var sol_id = {{ sol.pk }};
+
+        function on_edit() {
+            var edit_req = new XMLHttpRequest();
+            edit_req.onreadystatechange = function() {
+                    if(edit_req.readyState == 4 && edit_req.status == 200) {
+                        var rst = JSON.parse(edit_req.responseText);
+                            window.location.replace("{% url 'algo:solution' %}");
+
+                    }
+                }
+
+            edit_req.open("POST", "{% url 'algo:edit_sol' %}", true);
+            var data = JSON.stringify({
+                "sol_id" : sol_id
+            });
+            console.log(data)
+            var csrftoken = getCookie('csrftoken');
+            edit_req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            edit_req.setRequestHeader('X-CSRFToken', csrftoken);
+            edit_req.send(data);   
+    }
+
+        function on_delete() {
+            if(confirm("确认删除?") == true) {
+                var del_req = new XMLHttpRequest();
+                del_req.onreadystatechange = function() {
+                    if(del_req.readyState == 4 && del_req.status == 200) {
+                        var rst = JSON.parse(del_req.responseText);
+                        console.log(rst);
+                        if(rst.has_deleted ) {
+                            alert("成功删除数据");
+                            window.location.replace("{% url 'algo:solution' %}");
+                        }
+                    }
+                }
+
+                del_req.open("POST", "{% url 'algo:req_sol_delete' %}", true);
+                var data = JSON.stringify({
+                    "del" : true,
+                    "sol_id" : sol_id
+                });
+                console.log(data)
+                var csrftoken = getCookie('csrftoken');
+                del_req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                del_req.setRequestHeader('X-CSRFToken', csrftoken);
+                del_req.send(data);                   
+            }
+            else
+                alert("取消删除数据");
+        }
+    </script>
+</html>

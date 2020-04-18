@@ -1,0 +1,8 @@
+.record_item_code {
+    display: flex;
+    flex-direction: column; 
+}
+
+#lang {
+    border: 1px solid #D7C4D3;
+}

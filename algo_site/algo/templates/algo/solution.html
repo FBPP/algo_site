@@ -5,6 +5,8 @@
         <meta charset = "utf-8">
         {% load static %}
         <link rel = "stylesheet" type = "text/css" href = "{% static 'algo/index_style.css' %}">
+        <link rel = "stylesheet" type = "text/css" href = "{% static 'algo/solution.css' %}">
+
     </head>
     <body>
         <div id = "algo_page">
@@ -30,48 +32,51 @@
             <hr class = "hr_top">
            
             
-            <div id = "div_question" class = "div_question">
-                <div class = "div_search">
-                    <span class = "span_input"></span>
-                        <input type = "text" name = "search" class = "input_search" placeholder = "搜索题号, 标题">
-                    </span>
-                    <span class = "span_btn">
-                        <button class = "btn_search" type = "submit"></button>
-                    </span>
+            <div id = "" class = "sol">
+                <div class = "sol_head">
+                    <div class = "div_search">
+                        <span class = "span_input"></span>
+                            <input type = "text" name = "search" class = "input_search" placeholder = "搜索标题">
+                        </span>
+                        <span class = "span_btn">
+                            <button class = "btn_search" type = "submit"></button>
+                        </span>
+                    </div>
+                    <div class>
+                        <a href = "{% url 'algo:write_sol' %}" > 写题解 </a> </button>
+                    </div>
                 </div>
                 
                 <div >
-                    <table id = "question" class = "table_question">
+                    <table  class = "sol_table">
                         <thead>
                             <tr> 
-                                <th width = 50px><img = ""> </th>
-                                <th width = 50px>题号</th>
-                                <th width = 600px>标题</th>
-                                <th width = 50px>难度</th>
+                                <th>标题</th>
+                                <th>作者</th>
+                                <th>难度</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for question in question_list %}
-                            <tr class = "q_tr">
-                                <td></td>
-                                <td class = "q_td2"> {{ question.pk }} </td>
-                                <td class = "q_td3">
-                                    <a href="{% url 'algo:question_index' question.pk %}">{{ question.question_title }} </a>
+                            {% for sol in sol_list %}
+                            <tr >
+                                <td >
+                                    <a href="{% url 'algo:solution_item' sol.pk %}">{{ sol.title }} </a>
                                 </td>
+                                <td> {{ sol.author_id.user_name }} </td>
                                 <td class = "
-                                    {% if question.question_level == 0 %}
-                                        q_td4_s
-                                    {% elif question.question_level == 1 %}
-                                        q_td4_m
-                                    {% elif question.question_level == 2 %}
-                                        q_td4_h
+                                    {% if sol.level == 0 %}
+                                        easy
+                                    {% elif sol.level == 1 %}
+                                        middle
+                                    {% elif sol.level == 2 %}
+                                        hard
                                     {% endif %}
                                     ">
-                                    {% if question.question_level == 0 %}
+                                    {% if sol.level == 0 %}
                                         简单
-                                    {% elif question.question_level == 1 %}
+                                    {% elif sol.level == 1 %}
                                         中等
-                                    {% elif question.question_level == 2 %}
+                                    {% elif sol.level == 2 %}
                                         困难
                                     {% endif %}
                                 </td>

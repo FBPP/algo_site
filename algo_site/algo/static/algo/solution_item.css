@@ -1,0 +1,25 @@
+h2 {
+    text-align: center;
+}
+div {
+    border:  1px solid #36DB09;
+}
+header{
+    display: flex;
+    
+}
+header div {
+    width: 14%;
+    margin-left: 4%;
+}
+section {
+    display: flex;
+    border:  1px solid #36DB09;
+}
+section div {
+    width: 10%;
+    padding-left: 10%;
+}
+section article {
+    width: 70%;
+}

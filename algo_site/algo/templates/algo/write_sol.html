@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang = "zh-CN">
+    <head>
+        <title> algo </title>
+        <meta charset = "utf-8">
+        {% load static %}
+        <link rel = "stylesheet" type = "text/css" href = "{% static 'algo/index_style.css' %}">
+
+        <link rel = "stylesheet" type = "text/css" href = "{% static 'algo/write_sol.css' %}">
+
+    </head>
+    <body>
+        <div id = "algo_page">
+
+            {% include 'algo/nav.html'%}
+
+            <hr class = "hr_top">
+            <div>
+                <form method = "POST" action = "/algo/sol_submit" >
+                {% csrf_token %}
+                <div>
+                    <div>
+                        <input name = "question_id" type = "number" placeholder="题号" required>
+                        <input name = "title" type = "text" placeholder="标题" required>
+                        <select name = "level" required>
+                            <option value = "0" selected> 简单 </option>
+                            <option value = "1" > 中等 </option>
+                            <option value = "2" > 困难 </option>
+                        </select>
+                        <input name = "source_link" type = "url" placeholder="题目链接" required>
+                    </div>
+                </div>
+
+                {% include "algo/markdown.html" %}
+
+                <div class = "btn_write_sol_form">
+                    <button type = "submit" onclick = "on_submit"> 提交 </button>
+                </div>
+                </form>
+            </div>
+        </div>
+        
+        
+    </body> 
+    
+</html>

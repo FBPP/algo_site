@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang = "zh-CN">
+    <head>
+        <title> algo </title>
+        <meta charset = "utf-8">
+        {% load static %}
+        <link rel = "stylesheet" type = "text/css" href = "{% static 'algo/question_style.css' %}">
+        <link rel="stylesheet" href="{% static 'algo/codemirror-5.52.2/lib/codemirror.css' %}">
+        <link rel="stylesheet" href="{% static 'algo/codemirror-5.52.2/theme/seti.css' %}">
+        <link rel = "stylesheet" type = "text/css" href = "{% static 'algo/submission_style.css' %}">
+
+        <script src="{% static 'algo/codemirror-5.52.2/lib/codemirror.js' %}"></script>
+        <script src="{% static 'algo/codemirror-5.52.2/mode/clike/clike.js' %}"></script>
+        <script src="{% static 'algo/codemirror-5.52.2/addon/edit/matchbrackets.js' %}"></script>
+
+        
+    </head>
+    <body>
+        <div id = "algo_page">
+            {% include 'algo/nav.html'%}
+            <!--
+            <nav id = "n_top" class = "nav_top">
+                <div id = "div_top" >
+                    <ul class = "ul_top">
+                        <li><a href="{% url 'algo:lg_index' u.pk %}"> 题库 </a></li>
+                        <li><a href="#"> 题解 </a></li>
+                        <li><a href="#"> 分享 </a></li>
+                        <li><a href="#"> 活动 </a></li>
+                    </ul>
+                
+                    <ul class = "ul_lg">
+                        <li><a href = "#"> {{ u.user_name }} </a></li>
+                    </ul>
+                </div>
+            </nav>
+        -->
+            <div>
+                <div class = "div_question">
+                    <div id = "q_title" class = "q_title">
+                        <P style = "font-weight: bold;"> {{ q.pk }}.{{ q.question_title }} </P>
+                    </div>
+                    <div class = "q_sub">
+                        <ul>
+                            <li> <a href = "{% url 'algo:question_index' q.pk %}">题目</a> </li>
+                            <li> <a href = "{% url 'algo:submission' q.pk %}" >提交记录 </a></li>
+                            <li> 题解 </li>
+                        </ul>
+                    </div>
+                </div>
+                <div >
+                    <table class = "record_table">
+                        <thead>
+                            <tr class = "record_tr"> 
+                                <th> 提交时间 </th>
+                                <th> 状态</th>
+                                <th> 运行时间</th>
+                                <th> 运行空间</th>
+                                <th> 语言 </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for v in record_list %}
+                            <tr class = "record_tr">
+                                <td>{{ v.time }}</td>
+                                <td><a class = "
+                                    {% if v.status == "Accepted" %} 
+                                        AC
+                                    {% else %}
+                                        NOT_AC
+                                    {% endif %}
+                                    "
+                                     href = {% url 'algo:record_item' v.pk q.pk %}> {{ v.status }}</a></td>
+                                <td>{{ v.timeused }}s</td>
+                                <td>{{ v.memoryused }}MB</td>
+                                <td>{{ v.lang }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+               
+            </div>
+
+        </div>
+        
+        
+    </body> 
+
+    <script type="text/javascript">
+        
+
+    </script>
+
+</html>
