@@ -3,7 +3,7 @@
 
 <nav id = "n_top" class = "nav_top">
     <ul>
-        <li><a href="{% url 'algo:lg_index' u.pk %}"> 题库 </a> </li>
+        <li><a href="{% url 'algo:lg_index' %}"> 题库 </a> </li>
         <li><a href="{% url 'algo:solution' %}"> 题解 </a> </li>
         <li><a href="#"> 分享 </a> </li>
         <li><a href="#"> 活动 </a> </li>
@@ -12,7 +12,7 @@
             <li><a href = "#">我的空间</a></li>
             <li><a href = "#">个人信息</a></li>
             <li><a href = "#">修改密码</a></li>
-            <li><a href = "#">登出</a></li>
+            <li><a href = "{% url 'algo:lg_out' %}">登出</a></li>
         </ul>
         </li>
     </ul>

@@ -103,4 +103,4 @@ def lg(request):
             request.session["email"] = email
             request.session["password"] = password
 
-            return HttpResponseRedirect(reverse("algo:lg_index", args = (u.pk, )))
+            return HttpResponseRedirect(reverse("algo:lg_index"))

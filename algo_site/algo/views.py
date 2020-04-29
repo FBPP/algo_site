@@ -32,19 +32,29 @@ def check_session(request):
             "exist": False,
         }
 
+def lg_out_view(request):
+    rst = check_session(request)
+
+    u_obj = User.objects.get(pk = rst["uid"])
+    del request.session['email'] 
+    del request.session["password"]
+    return HttpResponseRedirect(reverse("algo:index"))
+
 def index_view(request):
     if "email" in request.session and "password" in request.session:
         u = User.objects.get(email = request.session["email"])
-        return HttpResponseRedirect(reverse("algo:lg_index", args = (u.pk, )))
+        return HttpResponseRedirect(reverse("algo:lg_index"))
     else:
         context = {}
         context["question_list"] = Question.objects.order_by("pk")
-        return render(request, "algo/lg_index.html", context)
+        return render(request, "algo/index.html", context)
 
-def lg_index_view(request, user_id):
+def lg_index_view(request):
+    rst = check_session(request)
+    uid = rst["uid"]
     context = {}
     context["question_list"] = Question.objects.order_by("pk")
-    context["u"] = User.objects.get(pk = user_id)
+    context["u"] = User.objects.get(pk = uid)
     return render(request, "algo/lg_index.html", context)
 
 
