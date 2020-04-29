@@ -48,10 +48,11 @@ class Solution(models.Model):
 class Sol_vote(models.Model):
     sol_id = models.ForeignKey(Solution, on_delete = models.CASCADE)
     u_id = models.ForeignKey(User, on_delete = models.CASCADE)
-    flag = models.IntegerField(default = 0)
+    up = models.IntegerField(default = 0)
+    down = models.IntegerField(default = 0)
 
     def __str__(self):
-        return self.flag
+        return self.sol_id.title
 
 class Sol_comment(models.Model):
     sol_id = models.ForeignKey(Solution, on_delete = models.CASCADE)

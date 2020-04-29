@@ -1,6 +1,10 @@
 .sol {
+    margin : 20px 50px 10px 50px;
     display: flex;
     flex-direction: column;
+}
+.write_sol {
+    margin-left: 20px;
 }
 .sol_head {
     display: flex;
@@ -10,6 +14,13 @@
     width: 100%;
     border: 2px solid #C7C7C7;
     border-collapse: collapse;
+}
+.sol_table th {
+    width: 30%;
+}
+.sol_table td {
+    width: 30%;
+    text-align: center;
 }
 .easy {
     color : #6CF812;

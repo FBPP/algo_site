@@ -14,6 +14,7 @@ import json
 
 import os
 import shutil
+import sys
 
 judge_path = "/home/pengpeng/workplace/algo/algo_site/algo/judge/judge_space"
 
@@ -216,12 +217,25 @@ def solution_item_view(request, sol_id):
 
     u = User.objects.get(pk = rst["uid"])  
     sol_obj = Solution.objects.get(pk = sol_id)
-    context = {
+
+    context = {}
+    try:
+        sol_vote_obj = Sol_vote.objects.filter(sol_id = sol_obj, u_id = u)[0]
+    except:
+        context["vote_exist"] = False
+    else:
+        context["vote_exist"] = True
+        context["sol_vote"] = sol_vote_obj
+        print(str(sys._getframe().f_lineno) + " sol_vote existed", sol_vote_obj.up, sol_vote_obj.down)
+
+    comment_list = Sol_comment.objects.filter(sol_id = sol_obj)
+    context.update({
         "u" : u,
         "sol" : sol_obj,
         "aid" : sol_obj.author_id.pk,
         "content" : json.dumps(sol_obj.content),
-    }
+        "comment_list": comment_list
+    })
 
     return render(request, "algo/solution_item.html", context)
 
@@ -247,14 +261,8 @@ def sol_submit(request):
 
     sol_obj = Solution.objects.create(author_id = author, qid = qid, title = title, source_link = source_link, 
                 level =  level,time = time, content = content)
-    
-    if Solution.objects.filter(pk = sol_obj.pk).exists():
-        sol_obj = Solution.objects.filter(pk = sol_obj.pk).update(author_id = author, qid = qid, title = title, source_link = source_link, 
-                level =  level,time = time, content = content)
-    else:
-        sol_obj.save()
+    sol_obj.save()
     return HttpResponseRedirect(reverse("algo:solution_item", args = (sol_obj.pk, )))
-
 
 def req_sol_delete(request):
     rst = check_session(request)
@@ -281,6 +289,87 @@ def edit_sol_view(request):
     print(sol_obj)
     return render(request, "algo/edit_sol.html", context)
 
+def sol_update_view(request):
+    rst = check_session(request)
+
+    sol_id = request.POST["sol_id"]
+    qid = request.POST["question_id"]
+    title = request.POST["title"]
+    level = request.POST["level"]
+    source_link = request.POST["source_link"]
+    time = timezone.now()
+    content = request.POST["mark_text"]
+
+    sol_obj = Solution.objects.get(pk = sol_id)
+    sol_obj.qid = qid
+    sol_obj.title = title
+    sol_obj.source_link = source_link
+    sol_obj.time = time
+    sol_obj.level = level
+    sol_obj.content = content
+    sol_obj.save()
+
+    return HttpResponseRedirect(reverse("algo:solution_item", args = (sol_obj.pk, )))
+    
+def up_vote_view(request):
+    rst = check_session(request)
+    req = json.loads(request.body.decode())
+    u = User.objects.get(pk = rst["uid"])
+
+    flag = req["flag"]
+    sol_id = req["sol_id"]
+    sol_obj = Solution.objects.get(pk = sol_id)
+    print(sol_obj)
+    sol_obj.vote += flag
+    sol_obj.save()
+    
+    try:
+        sol_vote_obj = Sol_vote.objects.filter(sol_id = sol_obj, u_id = u)[0]
+        
+    except:
+        vote_obj = Sol_vote.objects.create(sol_id = sol_obj,  u_id = u, up = flag)
+        vote_obj.save()
+    else:
+        sol_vote_obj.up += flag
+        sol_vote_obj.save()
+    
+    return HttpResponse()
+
+def down_vote_view(request):
+    rst = check_session(request)
+    req = json.loads(request.body.decode())
+    u = User.objects.get(pk = rst["uid"])
+
+    flag = req["flag"]
+    sol_id = req["sol_id"]
+    sol_obj = Solution.objects.get(pk = sol_id)
+    print(sol_obj)
+    sol_obj.vote += flag
+    sol_obj.save()
+    
+    try:
+        sol_vote_obj = Sol_vote.objects.filter(sol_id = sol_obj, u_id = u)[0]
+    except:
+        vote_obj = Sol_vote.objects.create(sol_id = sol_obj,  u_id = u, down = flag)
+        vote_obj.save()
+    else:
+        sol_vote_obj.down += flag
+        sol_vote_obj.save()
+    
+    return HttpResponse()
+
+def comment_sub_view(request):
+    rst = check_session(request)
+    content = request.POST["content"]
+    sol_id = request.POST["sol_id"]
+    print("--------",str(sol_id))
+    sol_obj = Solution.objects.get(pk = sol_id)
+    u = User.objects.get(pk = rst["uid"])
+    sol_comm_obj = Sol_comment.objects.create(sol_id = sol_obj, u_id = u, time = timezone.now(), text = content)
+    sol_comm_obj.save() 
+    return HttpResponseRedirect(reverse("algo:solution_item", args = (sol_obj.pk, )))
+    
+    
 
 
 # Create your views here.

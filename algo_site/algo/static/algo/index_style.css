@@ -1,97 +1,59 @@
-.nav_top {
-    margin :  10px 10px 10px 10px;
-}
-.nav_top div {
-    display: block;
-    height: auto;
-    padding-bottom: 0;
-    overflow: visible;
-}
-.ul_top li {
-    padding : 0px 10px 10px 50px;
-    margin :  0px 10px 10px 50px;
-    float : left;
-    list-style-type: none;
-}
-.ul_top li a {
-    color :#000000;
-    text-decoration : none;
-}
-.ul_top li a:hover{
-    color : #CECECE;
-    text-decoration : none;
-}
-.ul_lg {
-    margin-left : 80%;
-}
-.ul_lg li {
-    list-style-type: none;
-}
-.ul_lg li a{
-    color : #000000;
-    text-decoration : none;
-}
-.ul_lg li  a:hover{
-    color : #CECECE;
-    text-decoration : none;
-}
-.hr_top {
-    width : 100%;
-    margin : 5px 0 0 5px;
-}
 .div_question{
-    width : 1400px;
-    margin : 20px 50px 10px 50px;
+    width : 80%;
+    margin : 20px 10% 20px 10%;
 }
 .div_search{
-    width : 700px;
+    width : 60%;
     height : 40px;
     margin-left : 10px;
     margin-bottom: 10px;
 }
 .input_search {
-    width : 625px;
-    height : 32px;
+    width : 400px;
+    height : 20px;
     margin-bottom: 5px;
+    border-radius: 30px;
+    border: 1px solid #7C7777;
 }
-.div_search span {
-    float : right;
+.input_search:focus {
+    box-shadow: 0 0 15px #03a9f4; 
+    outline: none;
 }
-.span_input {
+
+.div_search {
+    display: flex;
+}
+.div_input {
     width : 32px;
     height : 32px;
+    margin-left: 0px;
 }
 .span_btn {
-    width : 32px;
-    height: 32px;
-    position: relative;
+    width : 16px;
+    height: 16px;
+    margin-left: 63%;
 }
-.btn_search {
-    width : 32px;
-    height: 32px;
-    background : url("search.svg") no-repeat;
+.span_btn button {
+    width : 16px;
+    height: 16px;
+    background : url("img/search.svg") no-repeat;
     border-style : none;
 }
-.btn_search:hover {
-    width : 32px;
-    height: 32px;
-    background : url("search_on.svg") no-repeat;
+
+.span_btn button:hover {
+    background : url("img/search_hov.svg") no-repeat;
     border-style : none;
 }
-.btn_search:focus {
-    width : 32px;
-    height: 32px;
-    border-style : none;
+.span_btn button:focus {
     outline : none;
 }
 
 .table_question{
-    width : 1000px;
-    border-collapse:collapse;
-    
+    width : 100%;
+    border-collapse: collapse;
 }
 .table_question td{
-    height :30px;
+    height: 30px;
     text-align : center;
     background-color: #FCF9F9;
     border-bottom: 1px solid #cac2c1;
@@ -125,3 +87,8 @@
     width : 50px;
     color : #F61F02;
 }
+
+.sol_vote {
+    align-items: center; 
+}
+

@@ -1,15 +1,19 @@
+{% load static %}
+<link rel = "stylesheet" type = "text/css" href = "{% static 'algo/nav.css' %}">
 
 <nav id = "n_top" class = "nav_top">
-    <div id = "div_top" >
-        <ul class = "ul_top">
-            <li><a href="{% url 'algo:lg_index' u.pk %}"> 题库 </a> </li>
-            <li><a href="{% url 'algo:solution' %}"> 题解 </a> </li>
-            <li><a href="#"> 分享 </a> </li>
-            <li><a href="#"> 活动 </a> </li>
+    <ul>
+        <li><a href="{% url 'algo:lg_index' u.pk %}"> 题库 </a> </li>
+        <li><a href="{% url 'algo:solution' %}"> 题解 </a> </li>
+        <li><a href="#"> 分享 </a> </li>
+        <li><a href="#"> 活动 </a> </li>
+        <li><a href="#"><strong id = "id_user_username"> {{u.user_name }} </strong></a>
+        <ul class="dropdown-menu">
+            <li><a href = "#">我的空间</a></li>
+            <li><a href = "#">个人信息</a></li>
+            <li><a href = "#">修改密码</a></li>
+            <li><a href = "#">登出</a></li>
         </ul>
-    
-        <ul id = "ul_lg" class = "ul_lg">
-            <li><a href = "#"> {{ u.user_name }} </a></li>
-        </ul>
-    </div>
+        </li>
+    </ul>
 </nav>

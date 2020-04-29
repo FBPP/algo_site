@@ -1,8 +1,15 @@
 .record_item_code {
     display: flex;
     flex-direction: column; 
+    width: 80.2%;
+    margin-left: 10%;
+    margin-right: 10%;
 }
 
 #lang {
-    border: 1px solid #D7C4D3;
+    border-bottom: 1px solid #CECECE;
+}
+.record_item_code  {
+    border: 1px solid #CECECE;
+    border-top: 1px solid transparent;
 }

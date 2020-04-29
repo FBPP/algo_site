@@ -17,10 +17,9 @@
 
             {% include 'algo/nav.html'%}
 
-            <hr class = "hr_top">
 
             <h2>{{ sol.qid }}.{{ sol.title }}</h2>
-            <header>
+            <header class = "info_head">
                 <a href = "{{ sol.source_link }}"> 原题链接 </a>
                 <div class = "
                             {% if sol.level == 0 %}
@@ -43,32 +42,70 @@
                     <a href = "#"> {{ sol.author_id.user_name }}</a>
                 </div>
                 <div> {{sol.time}} </div>
-                <div>
+                <div class = "author_form">
                     {% if u.pk == aid %}
                     <form method = "POST" action = "{% url 'algo:edit_sol' %}">
                     {% csrf_token %}
                         <input name = "sol_id", value = "{{ sol.pk }}" style = " display : None; " ></input>
-                        <button type = "submit"> 编辑 </button>
+                        <button class = "edit_btn" type = "submit" title = "编辑"></button>
                     </form>
-                    <button onclick = "on_delete()"> 删除</button>
+                        <button class = "delete_btn" onclick = "on_delete()" title = "删除"> </button>
                     {% endif %}
                 </div>
             </header>
             <section>
+                {% if vote_exist %}
                 <div class = "sol_vote">
-                    <button>赞同</button>
-                    <P>{{ sol.vote }}</P>
-                    <button> 不赞同 </button>
+                    <button id = "up" class = "{% if sol_vote.up == 0 %}
+                                        btn_up
+                                    {% elif sol_vote.up > 0 %}
+                                        btn_is_up
+                                    {% endif %}
+                                        " value = "{{ sol_vote.up }}" onclick = "on_up()"></button>
+                    <div id = "vote_val" style = "margin-left: 6%;">{{ sol.vote }}</div>
+                    <button id = "down" class = "{% if sol_vote.down == 0 %}
+                                        btn_down
+                                    {% else %}
+                                        btn_is_down
+                                    {% endif %}
+                                        " value = "{{ sol_vote.down }}" onclick= "on_down()"> </button>
                 </div>
+                {% else %}
+                <div class = "sol_vote">
+                    <button id = "up" class = "btn_up" value = "{{ sol_vote.up }}" onclick = "on_up()"></button>
+                    <div id = "vote_val" style = "margin-left: 6%;">{{ sol.vote }}</div>
+                    <button  id = "down" class = "btn_down" value = "{{ sol_vote.up }}" onclick = "on_down()"> </button>
+                </div>
+                {% endif %}
                 <article id = "sol_content" class = "sol_content">
                 </article>
                 
             </section>
-            <article>
+            <article class = "comm_article">
                 <div>
-                    <h4>评论</h4>
-                    <input type = "text">
+                    <h4 style="color:#FF6800">评论</h4>
+                    <form class = "comm_form" method = "POST" action = "{% url 'algo:comment_sub' %}">
+                    {% csrf_token %}
+                        <div>
+                            <textarea name = "content" required></textarea>
+                            <input type = "text" name = "sol_id" value = " {{ sol.pk }} " style = "display: none;">
+                        </div>
+                        <div class = "comm_sub_btn">
+                            <button type = "submit">提交</button>
+                        </div>
+                    </form>
+                    
                 </div>  
+                {% for comm in comment_list %}
+                <hr style="border: 1px solid #D9D9D9;">
+                <div class = "comm_list">
+                    <div class = "usr_and_time">
+                        <a href = "#" style = "color: #247459">{{ comm.u_id.user_name }}</a>
+                        <span>{{ comm.time }}</span>
+                    </div>
+                    <pre>{{ comm.text }}</pre>
+                </div>
+                {% endfor %}
             </article>
 
         </div>
@@ -104,7 +141,6 @@
                     if(edit_req.readyState == 4 && edit_req.status == 200) {
                         var rst = JSON.parse(edit_req.responseText);
                             window.location.replace("{% url 'algo:solution' %}");
-
                     }
                 }
 
@@ -122,6 +158,7 @@
         function on_delete() {
             if(confirm("确认删除?") == true) {
                 var del_req = new XMLHttpRequest();
+
                 del_req.onreadystatechange = function() {
                     if(del_req.readyState == 4 && del_req.status == 200) {
                         var rst = JSON.parse(del_req.responseText);
@@ -146,6 +183,73 @@
             }
             else
                 alert("取消删除数据");
+        }
+
+        var sol_id = {{ sol.pk | safe}};
+        function on_up(){
+            var up_req = new XMLHttpRequest();
+            up_req.open("POST", "{% url 'algo:up_vote' %}", true);
+            var value = document.getElementById("up").getAttribute("value");
+            var flag = 0
+            var vote_val = document.getElementById("vote_val").innerText;
+            if(value == 0) {
+                flag = 1;
+                document.getElementById("up").setAttribute("class", "btn_is_up" );
+                document.getElementById("up").setAttribute("value", "1");       
+                vote_val = parseInt(vote_val, 10)
+                vote_val += 1;
+                document.getElementById("vote_val").innerHTML = vote_val;
+            }
+            else {
+                flag = -1;
+                document.getElementById("up").setAttribute("class", "btn_up");
+                document.getElementById("up").setAttribute("value", "0" ); 
+                vote_val = parseInt(vote_val, 10)
+                vote_val -= 1;
+                document.getElementById("vote_val").innerHTML = vote_val;
+            }
+
+            var data = JSON.stringify({
+                "flag" : flag,
+                "sol_id": sol_id,
+            });
+            var csrftoken = getCookie('csrftoken');
+            up_req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            up_req.setRequestHeader('X-CSRFToken', csrftoken);
+            up_req.send(data);         
+        }
+
+        function on_down(){
+            var up_req = new XMLHttpRequest();
+            up_req.open("POST", "{% url 'algo:down_vote' %}", true);
+            var value = document.getElementById("down").getAttribute("value");
+            var flag = 0
+            var vote_val = document.getElementById("vote_val").innerText;
+            if(value == 0) {
+                flag = -1;
+                document.getElementById("down").setAttribute("class", "btn_is_down" );
+                document.getElementById("down").setAttribute("value", "1");       
+                vote_val = parseInt(vote_val, 10)
+                vote_val -= 1;
+                document.getElementById("vote_val").innerHTML = vote_val;
+            }
+            else {
+                flag = 1;
+                document.getElementById("down").setAttribute("class", "btn_down");
+                document.getElementById("down").setAttribute("value", "0" ); 
+                vote_val = parseInt(vote_val, 10)
+                vote_val += 1;
+                document.getElementById("vote_val").innerHTML = vote_val;
+            }
+
+            var data = JSON.stringify({
+                "flag" : flag,
+                "sol_id": sol_id,
+            });
+            var csrftoken = getCookie('csrftoken');
+            up_req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            up_req.setRequestHeader('X-CSRFToken', csrftoken);
+            up_req.send(data);         
         }
     </script>
 </html>

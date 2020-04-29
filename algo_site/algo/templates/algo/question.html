@@ -33,7 +33,6 @@
                 </div>
             </nav>
         -->
-            <hr class = "hr_top">
             
             <div id = "div_question" class = "div_question">
                 <div id = "q_title" class = "q_title">
@@ -121,19 +120,26 @@
                             <option value = "3"> javascript </option>
                         </select>
                     </div>
-                    <div class = "code_reset">
-                        重置
-                    </div>
+                    <button class = "code_reset"> </button>
                     <div class = "code_tool">
-                        选项
                     </div>
                 </div>
                 <div class = "code_edit">
                     <textarea id = "code"></textarea>
                 </div>
                 <div class = "code_btn">
-                    <input type = "submit" id = "submit" value = "调试" onclick = "on_debug()" >
-                    <input type = "submit" id = "submit" value = "提交" onclick = "on_submit()">
+                    <button type = "submit" id = "submit" class  = "debug_btn" style="float: right; border-radius: 20px; margin: 20px 0 0 0;"  onclick = "on_debug()">
+                        <span class = "debug_img"  style="top: 2px;" ></span>
+                        &nbsp;
+                        调试代码
+                        &nbsp;
+                    </button>
+                    <button type = "submit" id = "submit" class  = "sub_btn" style="float: right; border-radius: 20px; margin: 20px 0 0 0;"  onclick = "on_submit()">
+                        <span class = "sub_img"  style="top: 2px;" ></span>
+                        &nbsp;
+                        提交代码
+                        &nbsp;
+                    </button>
                 </div>
             </div>
             <div class = "div_code_status">
@@ -161,7 +167,7 @@
                 </div>
             </div>
 
-            <div style = "width: 100%; height: 200px;">
+            <div style = "width: 80%; height: 200px; margin-left: 10%; margin-right: 10%;">
 
             </div>
 

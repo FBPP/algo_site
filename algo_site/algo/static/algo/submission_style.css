@@ -7,8 +7,10 @@
 }
 
 .record_table {
-    width: 100%;
-    border: 2px solid #C7C7C7;
+    width: 80%;
+    margin: 0px 10% 0px 10%;
+    border: 1px solid #C7C7C7;
+    border-top: 1px solid #FFF;
     border-collapse: collapse;
 }
 
@@ -22,6 +24,7 @@
     align-items : center;
     text-align: center;
     border-top: 1px solid #C7C7C7;
+    font-size: small;
 }
 
 .AC {

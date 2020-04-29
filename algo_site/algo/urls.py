@@ -16,5 +16,9 @@ urlpatterns = [
     path("write_sol", views.write_solution_view, name = "write_sol"),
     path("sol_submit", views.sol_submit, name = "sol_submit"),
     path("req_sol_delete", views.req_sol_delete, name = "req_sol_delete"),
-    path("edit_sol", views.edit_sol_view, name = "edit_sol")
+    path("edit_sol", views.edit_sol_view, name = "edit_sol"),
+    path("sol_update", views.sol_update_view, name = "sol_update"),
+    path("up_vote", views.up_vote_view, name = "up_vote"),
+    path("down_vote", views.down_vote_view, name = "down_vote"),
+    path("comment_sub", views.comment_sub_view, name = "comment_sub")
 ]

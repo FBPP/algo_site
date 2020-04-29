@@ -29,21 +29,21 @@
                 </div>
             </nav>
         -->
-            <hr class = "hr_top">
+
            
             
             <div id = "" class = "sol">
                 <div class = "sol_head">
                     <div class = "div_search">
-                        <span class = "span_input"></span>
-                            <input type = "text" name = "search" class = "input_search" placeholder = "搜索标题">
-                        </span>
+                        <div class = "div_input">
+                            <input type = "text" name = "search" class = "input_search" placeholder = "搜索题号, 标题">
+                        </div>
                         <span class = "span_btn">
-                            <button class = "btn_search" type = "submit"></button>
+                            <button  type = "submit"></button>
                         </span>
                     </div>
-                    <div class>
-                        <a href = "{% url 'algo:write_sol' %}" > 写题解 </a> </button>
+                    <div class = "write_sol">
+                        <a href = "{% url 'algo:write_sol' %}" > 写题解 </a>
                     </div>
                 </div>
                 
@@ -58,7 +58,7 @@
                         </thead>
                         <tbody>
                             {% for sol in sol_list %}
-                            <tr >
+                            <tr>
                                 <td >
                                     <a href="{% url 'algo:solution_item' sol.pk %}">{{ sol.title }} </a>
                                 </td>

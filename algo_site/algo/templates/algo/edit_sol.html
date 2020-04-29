@@ -16,12 +16,13 @@
 
             <hr class = "hr_top">
             <div>
-                <form method = "POST" action = "/algo/sol_submit" >
+                <form method = "POST" action = "/algo/sol_update" >
                 {% csrf_token %}
                 <div>
                     <div>
-                        <input name = "question_id" type = "number" placeholder="题号" value = "{{ sol.qid }}" required>
-                        <input name = "title" type = "text" placeholder="标题" value = "{{ sol.title }}"required>
+                        <input name = "sol_id" value = "{{ sol.pk }}" required>
+                        <input name = "question_id" type = "number" placeholder = "题号" value = "{{ sol.qid }}" required>
+                        <input name = "title" type = "text" placeholder = "标题" value = "{{ sol.title }}" required>
                         <select name = "level" required>
                             <option value = "0" {% if sol.level == 0 %} selected {% endif %}> 简单 </option>
                             <option value = "1" {% if sol.level == 1 %} selected {% endif %}> 中等 </option>
